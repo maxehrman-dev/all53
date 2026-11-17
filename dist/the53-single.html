@@ -274,7 +274,7 @@ body.low .clockbar-wrap i{background:var(--bad)}
 .face b{display:block;font:900 30px/1 var(--display);color:var(--down);margin:2px 0 4px}
 .face small{color:var(--muted);font-size:13.5px}
 .face .btn{align-self:stretch;min-width:84px;font:800 18px var(--display);text-transform:uppercase;letter-spacing:.06em}
-.sug .sav{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#1C221F;flex:0 0 auto}
+.sug .sav{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#1C221F;flex:0 0 auto;display:block}
 .chip .av{width:24px;height:24px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#1C221F;margin-left:-4px}
 .ffcard .mono{width:56px;height:56px;border-radius:50%;overflow:hidden}
 .ffphoto{width:100%;height:100%;object-fit:cover;object-position:50% 15%}
@@ -556,7 +556,7 @@ var DIFF = {
   /* Easy: 60s, names pay 2x, player by player: a face pops up, Return or Next skips it, photos in suggestions.
      Hard: 45s, names pay 1.5x, suggestions without photos. Misses are free in both. */
   easy: { suggest:true, sugMin:2, wrong:0, repeat:0, start:60, mult:2,   capMult:1.6,  photos:true,  faceHint:true, starBonus:[1,2] },
-  hard: { suggest:true, sugMin:2, wrong:0, repeat:0, start:45, mult:1.5, capMult:1.35, photos:false, faceHint:false, starBonus:[2,3] }
+  hard: { suggest:true, sugMin:2, wrong:0, repeat:0, start:45, mult:1.5, capMult:1.35, photos:true,  faceHint:false, starBonus:[2,3] }
 };
 var TIERS = [[0,"Casual"],[10,"Fan"],[20,"Ball Knower"],[30,"Expert"],[40,"Elite"],[53,"GOAT"]];
 /* Estimated fan distribution: median names per run and spread (log scale). */
@@ -751,8 +751,9 @@ function monoFor(el,t){ el.textContent=ABBR[t.id]; el.style.background=t.color; 
    (img/current-buf.json, img/alltime-buf.json) fetched when a run starts, so rosters stay light. */
 /* Small 96px thumbnails (about 5 KB each), one file per team, served with the game (faces/current-buf.json).
    Current rosters only: All-Time has no photos. */
+function facePath(id){ return id ? "faces/p/"+id+".webp" : ""; }
 function photoURL(id){ return id ? "https://static.www.nfl.com/image/"+(id.charAt(0)==="p"?"private":"upload")+"/f_webp,q_70,w_96,h_96,c_fill,g_face/league/"+id.slice(1) : ""; }
-function photoSrc(p){ return p && (p.src || (p.img ? photoURL(p.img) : "")); }
+function photoSrc(p){ return p && (p.src || (p.img ? facePath(p.img) : "")); }
 function photoHTML(p, cls){ var u=photoSrc(p); return u ? '<img class="'+cls+'" src="'+u+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : ''; }
 function loadPhotos(pool){
   if(pool.imgs) return;
@@ -843,8 +844,8 @@ function startRun(opts){
       function(){ $("t-start").textContent="Start"; $("t-start").disabled=false; toast("All-Time rosters didn't load. Check your connection and try again."); });
     return;
   }
-  var pool=getPool(team, opts.era); if(DIFF[opts.diff].photos) loadPhotos(pool);
-  if(DIFF[opts.diff].photos && opts.era==="current") loadAllCurrentPhotos();
+  var pool=getPool(team, opts.era); loadPhotos(pool);
+  if(opts.era==="current") loadAllCurrentPhotos();
   G={team:team, era:opts.era, diff:opts.diff, pool:pool, named:{}, list:[], attempts:0, t:DIFF[opts.diff].start,
      earned:0, over:false, last:0, raf:0, tier:0, challenge:opts.challenge||null, daily:opts.daily||null, started:false};
   setTeamColors(team); monoFor($("g-mono"),team);
@@ -1018,8 +1019,8 @@ function updateSug(){
   sugIdx=0;
   var box=$("g-sug");
   box.innerHTML=sugItems.map(function(x,i){
-    var img = (showPhotos() && G.era==="current" && x.ref && CUR_IMGS[x.ref[0]]) ? CUR_IMGS[x.ref[0]][x.ref[1]] : "";
-    return '<button type="button" role="option" data-i="'+i+'" class="'+(i===0?'on':'')+'"><span class="sn">'+(img?'<img class="sav" src="'+photoURL(img)+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'')+esc(x.name)+'</span><small>'+esc(x.pos)+'</small></button>'; }).join("");
+    var img = (G.era==="current" && x.ref && CUR_IMGS[x.ref[0]]) ? CUR_IMGS[x.ref[0]][x.ref[1]] : "";
+    return '<button type="button" role="option" data-i="'+i+'" class="'+(i===0?'on':'')+'"><span class="sn">'+(G.era==="current"?(img?'<img class="sav" src="'+facePath(img)+'" alt="" onerror="this.replaceWith(Object.assign(document.createElement(\'i\'),{className:\'sav\'}))">':'<i class="sav"></i>'):'')+esc(x.name)+'</span><small>'+esc(x.pos)+'</small></button>'; }).join("");
   box.hidden=false;
 }
 $("g-in").addEventListener("input",updateSug);

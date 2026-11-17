@@ -19,5 +19,8 @@ for(const id in imgs){
   const faces=arr.slice(0,last).map(i=>{ const f=i && path.join(facesCache,i+'.webp'); if(f && fs.existsSync(f)){ faceCount++; return fs.readFileSync(f).toString('base64'); } return ''; });
   fs.writeFileSync(path.join(out,'faces','current-'+id+'.json'), JSON.stringify(faces));            /* thumbnails, served with the game */
 }
-console.log('faces', faceCount);
+/* one small file per player too, so the suggestion list can show any player in the league without loading every team */
+fs.mkdirSync(path.join(out,'faces','p'),{recursive:true}); let perPlayer=0;
+for(const id in imgs) for(const i of imgs[id].c){ if(!i) continue; const f=path.join(facesCache,i+'.webp'); if(fs.existsSync(f)){ fs.copyFileSync(f, path.join(out,'faces','p',i+'.webp')); perPlayer++; } }
+console.log('faces', faceCount, 'per-player files', perPlayer);
 console.log('ok', fs.statSync(path.join(out,'rosters-current.js')).size, fs.statSync(path.join(out,'rosters-alltime.js')).size);

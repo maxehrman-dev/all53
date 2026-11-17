@@ -46,7 +46,7 @@ fs.copyFileSync(path.join(dist, 'rosters-current.js'), path.join(art, 'rosters-c
 fs.copyFileSync(path.join(dist, 'rosters-alltime.js'), path.join(art, 'rosters-alltime.js'));
 fs.rmSync(path.join(art, 'img'), { recursive: true, force: true }); fs.rmSync(path.join(art, 'faces'), { recursive: true, force: true });
 fs.cpSync(path.join(dist, 'img'), path.join(art, 'img'), { recursive: true });
-fs.cpSync(path.join(dist, 'faces'), path.join(art, 'faces'), { recursive: true });
+fs.cpSync(path.join(dist, 'faces'), path.join(art, 'faces'), { recursive: true, filter: f => !/[\\/]faces[\\/]p([\\/]|$)/.test(f) });   /* the preview takes per-team files only */
 fs.writeFileSync(path.join(dist, 'favicon.svg'),
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#07090F"/>' +
   '<text x="32" y="45" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="34" fill="#E1B04B">53</text></svg>');
