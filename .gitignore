@@ -1,0 +1,10 @@
+# claude.ai preview build (regenerate with: ARTIFACT_URL=... node build.js)
+artifact/
+# downloaded inputs (update_rosters.sh fetches them)
+nfl/
+faces_cache/
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+.vercel/
