@@ -38,6 +38,11 @@ One NFL team, one clock. Name as many players as you can. Deep cuts buy time. Na
 Player photos are NFL headshots. They're fine for a personal fan project; if THE 53 goes commercial, swap them for
 licensed images or drop them (Easy still works without photos).
 
+## Live site
+
+GitHub Pages: https://maxehrman-dev.github.io/all53/ (published from `dist/` by `.github/workflows/pages.yml` on every
+push to `main`; one-time setup: Settings > Pages > Source: GitHub Actions).
+
 ## Host it for free
 
 Any static host works, and none of them will charge for this:
@@ -50,10 +55,10 @@ Any static host works, and none of them will charge for this:
 After you have the address, rebuild once so share links and link previews use it:
 
 ```bash
-./update_rosters.sh https://your-address.pages.dev/
+./update_rosters.sh https://maxehrman-dev.github.io/all53/
 ```
 
-Then upload `dist/` again.
+Then commit and push; the Pages workflow republishes.
 
 ## Keep rosters fresh
 
