@@ -40,8 +40,8 @@ licensed images or drop them (Easy still works without photos).
 
 ## Live site
 
-GitHub Pages: https://maxehrman-dev.github.io/all53/ (published from `dist/` by `.github/workflows/pages.yml` on every
-push to `main`; one-time setup: Settings > Pages > Source: GitHub Actions).
+GitHub Pages: https://maxehrman-dev.github.io/all53/. `.github/workflows/pages.yml` copies `dist/` to the `gh-pages`
+branch on every push to `main`; Pages serves that branch (Settings > Pages > Deploy from a branch > gh-pages, / root).
 
 ## Host it for free
 
